@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Проект "Комменты"</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="container">
+    <ul class="comments">
+    </ul>
+    <div class="add-form">
+      <input type="text" class="add-form-name" placeholder="Введите ваше имя" />
+      <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
+      <div class="add-form-row">
+        <button class="add-form-button">Написать</button>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+  let addFormNameEl = document.querySelector('.add-form-name');
+  let addFormTextEl = document.querySelector('.add-form-text');
+  const addFormButtonEl = document.querySelector('.add-form-button');
+  const commentsEl = document.querySelector('.comments');
+
+  const commentBox = [
+    { name: 'Глеб', when: '12.02.22 12:18', text: 'Это будет первый комментарий на этой странице', itLikes: false, counterLikes: 3 },
+    { name: 'Варвара Н.', when: '13.02.22 19:22', text: 'Мне нравится как оформлена эта страница! ❤', itLikes: true, counterLikes: 75 }
+  ]
+
+  const likeListeners = () => {
+    const itLikesButtons = document.querySelectorAll(".like-button");
+
+    for (const itLikesButton of itLikesButtons) {
+      itLikesButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+
+        const index = itLikesButton.dataset.index;
+        const comment = commentBox[index];
+
+        if (!comment.itLikes) {
+          comment.counterLikes++;
+          comment.itLikes = true;
+        } else {
+          comment.counterLikes--;
+          comment.itLikes = false;
+        }
+
+        renderComments();
+      });
+    }
+  };
+
+  const commentsListeners = () => {
+    const comments = document.querySelectorAll("li");
+
+    for (const comment of comments) {
+      comment.addEventListener("click", () => {
+        const counterComment = commentBox[comment.dataset.index];
+        addFormTextEl.value = `Пользователь ${counterComment.name} сказал: "${counterComment.text}".`;
+      });
+    }
+  };
+
+  const renderComments = () => {
+    const commentsHtml = commentBox
+      .map((comment, index) => {
+        return `<li class="comment" data-index="${index}">
+          <div class="comment-header">
+            <div>${comment.name}</div>
+            <div>${comment.when}</div>
+          </div>
+          <div class="comment-body">
+            <div class="comment-text">
+              ${comment.text}
+            </div>
+          </div>
+          <div class="comment-footer">
+            <div class="likes">
+              <span class="likes-counter">${comment.counterLikes}</span>
+              <button class="like-button ${comment.itLikes ? "-active-like" : ""}" data-index="${index}"></button>
+            </div>
+          </div>
+        </li> `;
+      })
+      .join("");
+    commentsEl.innerHTML = commentsHtml;
+    likeListeners();
+    commentsListeners();
+  };
+
+  renderComments();
+
+  addFormButtonEl.addEventListener("click", () => {
+    let userName = addFormNameEl.value.replaceAll(">", "&gt;");
+    userName = userName.replaceAll("<", "&lt;");
+
+    let userText = addFormTextEl.value.replaceAll(">", "&gt;");
+    userText = userText.replaceAll("<", "&lt;");
+
+    if (!userName.trim() || !userText.trim()) {
+      alert("Чтобы оставить комментарий, нужно указать Ваше имя и текст сообщения!");
+    } else {
+
+      const currentDateEl = new Date();
+      let minutes = ('0' + currentDateEl.getMinutes()).slice(-2);
+      let month = ('0' + (currentDateEl.getMonth() + 1)).slice(-2);
+
+      const fullDate = currentDateEl.getDate() + "." + month + "." + currentDateEl.getFullYear() + " " + currentDateEl.getHours() + ":" + minutes;
+
+      commentBox.push({ name: userName, when: fullDate, text: userText, itLikes: false, counterLikes: 0 });
+      renderComments()
+
+      addFormNameEl.value = "";
+      addFormTextEl.value = "";
+    }
+  });
+</script>
+
+</html>
