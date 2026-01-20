@@ -2,21 +2,21 @@ import { commentBox } from './commentBox.js'
 import { renderComments } from './renderComments.js'
 
 export const likeListeners = () => {
-    const itLikesButtons = document.querySelectorAll('.like-button')
+    const isLikedButtons = document.querySelectorAll('.like-button')
 
-    for (const itLikesButton of itLikesButtons) {
-        itLikesButton.addEventListener('click', (event) => {
+    for (const isLikedButton of isLikedButtons) {
+        isLikedButton.addEventListener('click', (event) => {
             event.stopPropagation()
 
-            const index = itLikesButton.dataset.index
+            const index = isLikedButton.dataset.index
             const comment = commentBox[index]
 
-            if (!comment.itLikes) {
-                comment.counterLikes++
-                comment.itLikes = true
+            if (!comment.isLiked) {
+                comment.likes++
+                comment.isLiked = true
             } else {
-                comment.counterLikes--
-                comment.itLikes = false
+                comment.likes--
+                comment.isLiked = false
             }
 
             renderComments()
