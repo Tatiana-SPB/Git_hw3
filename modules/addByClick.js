@@ -1,7 +1,7 @@
 import { updateComments } from './commentBox.js'
 import { formattingInputValue } from './formattingInputValue.js'
 import { formattingDate } from './formattingDate.js'
-import { postComment } from './api.js'
+import { fetchComments, postComment } from './api.js'
 
 export const addByClick = (renderComments) => {
     const addFormNameEl = document.querySelector('.add-form-name')
@@ -14,18 +14,28 @@ export const addByClick = (renderComments) => {
         const userText = formattingInputValue(addFormTextEl)
 
         if (!userName.trim() || !userText.trim()) {
-            alert(
-                'Чтобы оставить комментарий, нужно указать Ваше имя и текст сообщения!',
-            )
-        } else {
-            formattingDate()
+            alert('Заполните форму!')
+            return
+        }
 
-            postComment(userText, userName).then((data) => {
+        document.querySelector('.form-loading').style.display = 'block'
+        document.querySelector('.add-form').style.display = 'none'
+
+        formattingDate()
+
+        postComment(userText, userName)
+            .then((data) => {
+                document.querySelector('.form-loading').style.display = 'none'
+                document.querySelector('.add-form').style.display = 'flex'
+
                 updateComments(data)
                 renderComments()
+
                 userText.value = ''
                 userName.value = ''
             })
-        }
+            .then(() => {
+                return fetchComments()
+            })
     })
 }
