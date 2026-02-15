@@ -4,6 +4,7 @@ const host = 'https://wedev-api.sky.pro/api/v1/tatiana-alekseeva'
 export const fetchComments = () => {
     return fetch(host + '/comments')
         .then((response) => {
+            console.log(response)
             return response.json()
         })
         .then((responseData) => {
