@@ -25,8 +25,6 @@ export const addByClick = (renderComments) => {
 
         postComment(userText, userName)
             .then((data) => {
-                document.querySelector('.form-loading').style.display = 'none'
-                document.querySelector('.add-form').style.display = 'flex'
                 updateComments(data)
                 renderComments()
 
@@ -34,9 +32,6 @@ export const addByClick = (renderComments) => {
                 addFormNameEl.value = ''
             })
             .catch((error) => {
-                document.querySelector('.form-loading').style.display = 'none'
-                document.querySelector('.add-form').style.display = 'flex'
-
                 if (error.message === 'Failed to fetch') {
                     alert('Нет интернета, попробуйте снова')
                 }
@@ -58,6 +53,10 @@ export const addByClick = (renderComments) => {
                         addFormNameEl.classList.remove('-error')
                     }, 2000)
                 }
+            })
+            .finally(() => {
+                document.querySelector('.form-loading').style.display = 'none'
+                document.querySelector('.add-form').style.display = 'flex'
             })
     })
 }
