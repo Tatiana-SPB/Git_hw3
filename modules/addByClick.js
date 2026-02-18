@@ -23,14 +23,40 @@ export const addByClick = (renderComments) => {
 
         formattingDate()
 
-        postComment(userText, userName).then((data) => {
-            document.querySelector('.form-loading').style.display = 'none'
-            document.querySelector('.add-form').style.display = 'flex'
-            updateComments(data)
-            renderComments()
-        })
+        postComment(userText, userName)
+            .then((data) => {
+                updateComments(data)
+                renderComments()
 
-        addFormTextEl.value = ''
-        addFormNameEl.value = ''
+                addFormTextEl.value = ''
+                addFormNameEl.value = ''
+            })
+            .catch((error) => {
+                if (error.message === 'Failed to fetch') {
+                    alert('Нет интернета, попробуйте снова')
+                }
+
+                if (error.message === 'Ошибка сервера') {
+                    alert('Ошибка сервера')
+                }
+
+                if (error.message === 'Неверный запрос') {
+                    alert(
+                        'Имя и текст комментария должны быть не короче трех символов',
+                    )
+
+                    addFormTextEl.classList.add('-error')
+                    addFormNameEl.classList.add('-error')
+
+                    setTimeout(() => {
+                        addFormTextEl.classList.remove('-error')
+                        addFormNameEl.classList.remove('-error')
+                    }, 2000)
+                }
+            })
+            .finally(() => {
+                document.querySelector('.form-loading').style.display = 'none'
+                document.querySelector('.add-form').style.display = 'flex'
+            })
     })
 }
