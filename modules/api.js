@@ -4,9 +4,16 @@ const host = 'https://wedev-api.sky.pro/api/v1/tatiana-alekseeva'
 export const fetchComments = () => {
     return fetch(host + '/comments')
         .then((response) => {
-            console.log(response)
+            if (response.status === 500) {
+                throw new Error('Ошибка сервера')
+            }
+
+            if (!response.ok) {
+                throw new Error('Не удалось загрузить комментарии')
+            }
             return response.json()
         })
+
         .then((responseData) => {
             const appComments = responseData.comments.map((comment) => {
                 return {
@@ -20,6 +27,11 @@ export const fetchComments = () => {
 
             return appComments
         })
+        .catch((error) => {
+            if (error.message === 'Failed to fetch') {
+                alert('Нет интернета, попробуйте снова')
+            }
+        })
 }
 
 export const postComment = (text, name) => {
@@ -29,7 +41,21 @@ export const postComment = (text, name) => {
             text,
             name,
         }),
-    }).then(() => {
-        return fetchComments()
     })
+        .then((response) => {
+            if (response.status === 500) {
+                throw new Error('Ошибка сервера')
+            }
+
+            if (response.status === 400) {
+                throw new Error('Неверный запрос')
+            }
+
+            if (response.status === 201) {
+                return response.json()
+            }
+        })
+        .then(() => {
+            return fetchComments()
+        })
 }
