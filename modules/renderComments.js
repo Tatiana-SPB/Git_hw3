@@ -1,16 +1,18 @@
 import { commentBox } from './commentBox.js'
 import { likeListeners } from './likeListeners.js'
 import { commentsListeners } from './commentsListeners.js'
+import { formattingDate } from './formattingDate.js'
+import { addByClick } from './addByClick.js'
 
 export const renderComments = () => {
-    const commentsEl = document.querySelector('.comments')
+    const app = document.getElementById('app')
 
     const commentsHtml = commentBox
         .map((comment, index) => {
             return `<li class="comment" data-index="${index}">
           <div class="comment-header">
-            <div>${comment.name}</div>
-            <div>${comment.date}</div>
+            <div>${comment.author.name}</div>
+            <div>${formattingDate(comment.date)}</div>
           </div>
           <div class="comment-body">
             <div class="comment-text">
@@ -27,7 +29,31 @@ export const renderComments = () => {
         })
         .join('')
 
-    commentsEl.innerHTML = commentsHtml
+    const appHtml = `<div class="container">
+            <ul class="comments">${commentsHtml}</ul>
+            <div class="add-form">
+                <input
+                    type="text"
+                    class="add-form-name"
+                    placeholder="Введите ваше имя"
+                />
+                <textarea
+                    type="textarea"
+                    class="add-form-text"
+                    placeholder="Введите ваш коментарий"
+                    rows="4"
+                ></textarea>
+                <div class="add-form-row">
+                    <button class="add-form-button">Написать</button>
+                </div>
+            </div>
+            <div class="form-loading" style="display: none; margin-top: 20px">
+                Комментарий добавляется...
+            </div>
+        </div>`
+
+    app.innerHTML = appHtml
+    addByClick()
     likeListeners()
     commentsListeners()
 }
