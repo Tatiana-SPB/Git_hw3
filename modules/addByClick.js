@@ -1,13 +1,13 @@
-import { updateComments } from './commentBox.js'
 import { formattingInputValue } from './formattingInputValue.js'
 import { formattingDate } from './formattingDate.js'
 import { postComment } from './api.js'
+import { fetchAndRenderComments } from './fetchAndRenderComments.js'
+//import { renderComments } from './renderComments.js'
 
-export const addByClick = (renderComments) => {
+export const addByClick = () => {
     const addFormNameEl = document.querySelector('.add-form-name')
     const addFormTextEl = document.querySelector('.add-form-text')
     const addFormButtonEl = document.querySelector('.add-form-button')
-
     addFormButtonEl.addEventListener('click', () => {
         const userName = formattingInputValue(addFormNameEl)
 
@@ -24,10 +24,10 @@ export const addByClick = (renderComments) => {
         formattingDate()
 
         postComment(userText, userName)
-            .then((data) => {
-                updateComments(data)
-                renderComments()
-
+            .then(() => {
+                return fetchAndRenderComments()
+            })
+            .then(() => {
                 addFormTextEl.value = ''
                 addFormNameEl.value = ''
             })
