@@ -3,15 +3,18 @@ import { likeListeners } from './likeListeners.js'
 import { commentsListeners } from './commentsListeners.js'
 import { formattingDate } from './formattingDate.js'
 import { addByClick } from './addByClick.js'
+import { renderLogin } from './renderLogin.js'
+import { name, token } from './api.js'
 
 export const renderComments = () => {
-    const app = document.getElementById('app')
+    const container = document.querySelector('.container')
 
     const commentsHtml = commentBox
         .map((comment, index) => {
-            return `<li class="comment" data-index="${index}">
+            return `
+            <li class="comment" data-index="${index}">
           <div class="comment-header">
-            <div>${comment.author.name}</div>
+            <div>${comment.name}</div>
             <div>${formattingDate(comment.date)}</div>
           </div>
           <div class="comment-body">
@@ -29,19 +32,22 @@ export const renderComments = () => {
         })
         .join('')
 
-    const appHtml = `<div class="container">
-            <ul class="comments">${commentsHtml}</ul>
+    const addCommentsHtml = `
             <div class="add-form">
                 <input
                     type="text"
                     class="add-form-name"
                     placeholder="Введите ваше имя"
+                    readonly
+                    value="${name}"
+                    id="name-input"
                 />
                 <textarea
                     type="textarea"
                     class="add-form-text"
-                    placeholder="Введите ваш коментарий"
+                    placeholder="Введите ваш комментарий"
                     rows="4"
+                    id="text-input"
                 ></textarea>
                 <div class="add-form-row">
                     <button class="add-form-button">Написать</button>
@@ -50,10 +56,22 @@ export const renderComments = () => {
             <div class="form-loading" style="display: none; margin-top: 20px">
                 Комментарий добавляется...
             </div>
-        </div>`
+       `
 
-    app.innerHTML = appHtml
-    addByClick()
-    likeListeners()
-    commentsListeners()
+    const linkToLoginText = `<p>Чтобы отправить комментарий, <span class="link-login">войдите</p>`
+
+    const baseHtml = `<ul class="comments">${commentsHtml}</ul>
+    ${token ? addCommentsHtml : linkToLoginText}`
+
+    container.innerHTML = baseHtml
+
+    if (token) {
+        likeListeners(renderComments)
+        commentsListeners()
+        addByClick(renderComments)
+    } else {
+        document.querySelector('.link-login').addEventListener('click', () => {
+            renderLogin()
+        })
+    }
 }

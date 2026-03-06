@@ -8,7 +8,6 @@ export const addByClick = () => {
     const addFormNameEl = document.querySelector('.add-form-name')
     const addFormTextEl = document.querySelector('.add-form-text')
     const addFormButtonEl = document.querySelector('.add-form-button')
-    console.log('ghbdtn')
     addFormButtonEl.addEventListener('click', () => {
         const userName = formattingInputValue(addFormNameEl)
 

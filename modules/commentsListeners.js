@@ -8,7 +8,7 @@ export const commentsListeners = () => {
     for (const comment of comments) {
         comment.addEventListener('click', () => {
             const counterComment = commentBox[comment.dataset.index]
-            addFormTextEl.value = `Пользователь ${counterComment.author.name} сказал: "${counterComment.text}".`
+            addFormTextEl.value = `Пользователь ${counterComment.name} сказал: "${counterComment.text}".`
         })
     }
 }

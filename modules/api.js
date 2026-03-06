@@ -1,35 +1,34 @@
-//import { formattingDate } from './formattingDate.js'
+import { formattingDate } from './formattingDate.js'
 const host = 'https://wedev-api.sky.pro/api/v2/tatiana-alekseeva'
 
 const authToken = 'https://wedev-api.sky.pro/api/user'
 
-let token = ''
+export let token = ''
 
 export const updateToken = (newToken) => {
     token = newToken
 }
 
-export const fetchComments = () => {
-    return (
-        fetch(host + '/comments', {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
-            .then((response) => {
-                if (response.status === 500) {
-                    throw new Error('Ошибка сервера')
-                }
+export let name = ''
 
-                if (!response.ok) {
-                    throw new Error('Не удалось загрузить комментарии')
-                }
-                return response.json()
-            })
-            /*
-        .then((responseData) => {
-            const appComments = responseData.comments.map((comment) => {
+export const setName = (newName) => {
+    name = newName
+}
+
+export const fetchComments = () => {
+    return fetch(host + '/comments')
+        .then((response) => {
+            if (response.status === 500) {
+                throw new Error('Ошибка сервера')
+            }
+
+            if (!response.ok) {
+                throw new Error('Не удалось загрузить комментарии')
+            }
+            return response.json()
+        })
+        .then((data) => {
+            const containerComments = data.comments.map((comment) => {
                 return {
                     name: comment.author.name,
                     date: formattingDate(comment.date),
@@ -39,14 +38,13 @@ export const fetchComments = () => {
                 }
             })
 
-            return appComments
-        })*/
-            .catch((error) => {
-                if (error.message === 'Failed to fetch') {
-                    alert('Нет интернета, попробуйте снова')
-                }
-            })
-    )
+            return containerComments
+        })
+        .catch((error) => {
+            if (error.message === 'Failed to fetch') {
+                alert('Нет интернета, попробуйте снова')
+            }
+        })
 }
 
 export const postComment = (text, name) => {
@@ -59,33 +57,28 @@ export const postComment = (text, name) => {
             text,
             name,
         }),
-    }).then((response) => {
-        if (response.status === 500) {
-            throw new Error('Ошибка сервера')
-        }
-
-        if (response.status === 400) {
-            throw new Error('Неверный запрос')
-        }
-
-        if (response.status === 201) {
-            return response.json()
-        }
     })
-    /*.then(() => {
+        .then((response) => {
+            if (response.status === 500) {
+                throw new Error('Ошибка сервера')
+            }
+
+            if (response.status === 400) {
+                throw new Error('Неверный запрос')
+            }
+        })
+        .then(() => {
             return fetchComments()
-        })*/
+        })
 }
 
-export function login({ login, password }) {
-    return fetch(`${authToken}/login`, {
+export const login = (login, password) => {
+    return fetch(authToken + '/login', {
         method: 'POST',
         body: JSON.stringify({
-            login,
-            password,
+            login: login,
+            password: password,
         }),
-    }).then((response) => {
-        return response.json()
     })
 }
 
@@ -93,11 +86,9 @@ export function registration({ login, name, password }) {
     return fetch(authToken, {
         method: 'POST',
         body: JSON.stringify({
-            login,
-            name,
-            password,
+            login: login,
+            name: name,
+            password: password,
         }),
-    }).then((response) => {
-        return response.json()
     })
 }
