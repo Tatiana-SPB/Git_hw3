@@ -128,6 +128,7 @@ body {
 .add-form-name {
     width: 300px;
     padding: 11px 22px;
+    margin-top: 12px;
 }
 
 .add-form-text {
@@ -157,4 +158,28 @@ body {
 
 .-error {
     border: 1px, solid, red;
+}
+
+.link-login,
+.add-form-button-link {
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: 12px;
+}
+
+.add-form-registry {
+    border: none;
+    display: flex;
+    align-items: center;
+    column-gap: 24px;
+}
+
+.add-form-button-main {
+    margin-top: 12px;
+    font-size: 24px;
+    padding: 10px 30px;
+    background-color: #bcec30;
+    border: none;
+    border-radius: 18px;
+    cursor: pointer;
 }

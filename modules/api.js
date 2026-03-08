@@ -57,19 +57,18 @@ export const postComment = (text, name) => {
             text,
             name,
         }),
-    })
-        .then((response) => {
-            if (response.status === 500) {
-                throw new Error('Ошибка сервера')
-            }
+    }).then((response) => {
+        if (response.status === 500) {
+            throw new Error('Ошибка сервера')
+        }
 
-            if (response.status === 400) {
-                throw new Error('Неверный запрос')
-            }
-        })
-        .then(() => {
+        if (response.status === 400) {
+            throw new Error('Неверный запрос')
+        }
+    })
+    /*        .then(() => {
             return fetchComments()
-        })
+        })*/
 }
 
 export const login = (login, password) => {
@@ -82,7 +81,7 @@ export const login = (login, password) => {
     })
 }
 
-export function registration({ login, name, password }) {
+export function registration(login, name, password) {
     return fetch(authToken, {
         method: 'POST',
         body: JSON.stringify({

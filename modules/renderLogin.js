@@ -32,26 +32,57 @@ export const renderLogin = () => {
 
     container.innerHTML = loginHtml
 
-    document.querySelector('.registry').addEventListener('click', () => {
-        renderRegistration()
-    })
-
+    const linkEl = document.querySelector('.registry')
     const button = document.getElementById('login-button')
     const loginEl = document.getElementById('login')
     const passwordEl = document.getElementById('password')
 
+    linkEl.addEventListener('click', () => {
+        renderRegistration()
+    })
+
     button.addEventListener('click', () => {
-        //button.disabled = true
-        //document.querySelector('.login-loading').style.display = 'block'
+        if (!loginEl.value.trim() || !passwordEl.value.trim()) {
+            alert('Заполните форму!')
+            return
+        }
+
+        document.querySelector('.add-form-registry').style.display = 'none'
+        document.querySelector('.login-loading').style.display = 'block'
 
         login(loginEl.value, passwordEl.value)
             .then((response) => {
+                if (response.status === 400) {
+                    alert('Неверный логин или пароль')
+                }
+
                 return response.json()
             })
             .then((data) => {
                 updateToken(data.user.token)
                 setName(data.user.name)
                 fetchAndRenderComments()
+            })
+            .catch((error) => {
+                if (error.message === 'Failed to fetch') {
+                    alert('Нет интернета, попробуйте снова')
+                }
+
+                if (error.message === 'Ошибка сервера') {
+                    alert('Ошибка сервера')
+                }
+
+                loginEl.classList.add('-error')
+                passwordEl.classList.add('-error')
+
+                setTimeout(() => {
+                    loginEl.classList.remove('-error')
+                    passwordEl.classList.remove('-error')
+                }, 2000)
+
+                document.querySelector('.login-loading').style.display = 'none'
+                document.querySelector('.add-form-registry').style.display =
+                    'flex'
             })
     })
 }
